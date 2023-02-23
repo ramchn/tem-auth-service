@@ -290,7 +290,7 @@ def login_handler(event, context):
         # add current and expiry time
         current_time = datetime.now()
         body['iat'] = current_time
-        body['exp'] = current_time + timedelta(minutes=15)
+        body['exp'] = current_time + timedelta(hours=12)
         token = jwt.encode(body, "secret", algorithm="HS256")
         print('token: ' + str(token))
     except:
