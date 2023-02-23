@@ -1,0 +1,27 @@
+version = 0.1
+[dev]
+[dev.deploy]
+[dev.deploy.parameters]
+stack_name = "tem-dev-auth-service"
+s3_bucket = "tem-dev-deployment-bucket"
+s3_prefix = "tem-auth-service"
+region = "us-west-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []
+parameter_overrides = "Stage=\"dev\""
+
+
+[qa]
+[qa.deploy]
+[qa.deploy.parameters]
+stack_name = "tem-dev-auth-service"
+s3_bucket = "tem-dev-deployment-bucket"
+s3_prefix = "tem-auth-service"
+region = "us-west-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []
+parameter_overrides = "Stage=\"qa\""

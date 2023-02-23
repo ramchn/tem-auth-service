@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: The Eternal Monument Auth Api
+Parameters:
+  Stage:
+    Type: String
+    AllowedValues:
+      - dev
+      - qa
+Globals:
+  Function:
+    Runtime: python3.7
+    CodeUri: src/
+Resources:
+  ApiDeployment:
+    Type: AWS::Serverless::Api
+    Properties:
+      OpenApiVersion: 3.0.1
+      StageName: !Ref Stage
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    Description: 'Lambda auth function'
+    Properties:
+      FunctionName: !Join [ "-", [ tem, !Ref Stage, auth ] ]
+      Handler: handler.auth_handler
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Description: 'Lambda login function'
+    Properties:
+      FunctionName: !Join [ "-", [ tem, !Ref Stage, login ] ]
+      Handler: handler.login_handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: POST
+            RestApiId: !Ref ApiDeployment
