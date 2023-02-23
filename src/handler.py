@@ -35,12 +35,8 @@ def auth_handler(event, context):
         print('invalid token')
         raise Exception('Unauthorized')
 
-    if 'username' not in decoded_token:
+    if 'emailAddress' not in decoded_token or 'userType' not in decoded_token:
         print('invalid token')
-        raise Exception('Unauthorized')
-
-    if 'ramamoorthy' != decoded_token['username']:
-        print('invalid username')
         raise Exception('Unauthorized')
 
     """this could be accomplished in a number of ways:"""
@@ -49,7 +45,7 @@ def auth_handler(event, context):
     """3. Lookup in a self-managed DB"""
 
     """and produce the principal user identifier associated with the token"""
-    principalId = decoded_token['username']
+    principalId = decoded_token['emailAddress']
 
     """you can send a 401 Unauthorized response to the client by failing like so:"""
     """raise Exception('Unauthorized')"""
@@ -86,7 +82,8 @@ def auth_handler(event, context):
     # these are made available by APIGW like so: $context.authorizer.<key>
     # additional context is cached
     context = {
-        'username': decoded_token['username'], # $context.authorizer.key -> value
+        'emailAddress': decoded_token['emailAddress'], # $context.authorizer.key -> value
+        'userType': decoded_token['userType'], # $context.authorizer.key -> value
         'number' : 1,
         'bool' : True
     }
@@ -268,7 +265,7 @@ def login_handler(event, context):
     body = json.loads(event['body'])
     print('body: ' + str(body))
 
-    if 'emailAddress' not in body and 'password' not in body:
+    if 'emailAddress' not in body or 'password' not in body:
         print('invalid body')
         # send the response
         return {
@@ -293,7 +290,7 @@ def login_handler(event, context):
         # add current and expiry time
         current_time = datetime.now()
         body['iat'] = current_time
-        body['exp'] = current_time + timedelta(days=1)
+        body['exp'] = current_time + timedelta(minutes=15)
         token = jwt.encode(body, "secret", algorithm="HS256")
         print('token: ' + str(token))
     except:
