@@ -11,6 +11,10 @@ Globals:
   Function:
     Runtime: python3.7
     CodeUri: src/
+    Timeout: 15
+    Environment:
+      Variables:
+        USER_TABLE: !Join [ "-", [ tem, !Ref Stage, users ] ]
 Resources:
   ApiDeployment:
     Type: AWS::Serverless::Api
@@ -29,6 +33,9 @@ Resources:
     Properties:
       FunctionName: !Join [ "-", [ tem, !Ref Stage, login ] ]
       Handler: handler.login_handler
+      Policies:
+        DynamoDBCrudPolicy:
+          TableName: "*"
       Events:
         ApiEvent:
           Type: Api

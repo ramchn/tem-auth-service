@@ -12,7 +12,9 @@ from __future__ import print_function
 import re
 import jwt
 import json
+import os
 from datetime import datetime, timedelta
+from temcommonutils.dbutils import crud
 
 def auth_handler(event, context):
     print('Method ARN: ' + event['methodArn'])
@@ -266,15 +268,29 @@ def login_handler(event, context):
     body = json.loads(event['body'])
     print('body: ' + str(body))
 
-    if 'username' not in body:
+    if 'emailAddress' not in body and 'password' not in body:
         print('invalid body')
         # send the response
         return {
             'statusCode': 500,
             'body': json.dumps({'msg': 'invalid body'})
         }
+
+    validated, user_type = crud.validate_hashed_password(os.environ['USER_TABLE'], body['emailAddress'], body['password'])
+    if not validated:
+        print('invalid email/password')
+        # send the response
+        return {
+            'statusCode': 401,
+            'body': json.dumps({'msg': 'invalid username/password'})
+        }
     
     try:
+        # delete the password and add the userType
+        del body['password']
+        body['userType'] = user_type
+        
+        # add current and expiry time
         current_time = datetime.now()
         body['iat'] = current_time
         body['exp'] = current_time + timedelta(days=1)
