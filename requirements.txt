@@ -1,0 +1,1 @@
+-e git+ssh://git@github.com/ramchn/tem-common-utils.git@feature/remove-events#egg=temcommonutils
