@@ -285,7 +285,7 @@ def login_handler(event, context):
         # delete the password and add the userType and userId
         del body['password']
         body['userType'] = row['userType']
-        body['userId'] = row['userId']
+        body['userId'] = row['id']
         
         # add current and expiry time
         current_time = datetime.now()
