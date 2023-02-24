@@ -273,7 +273,7 @@ def login_handler(event, context):
             'body': json.dumps({'msg': 'invalid body'})
         }
 
-    validated, user_type = crud.validate_hashed_password(os.environ['USER_TABLE'], body['emailAddress'], body['password'])
+    validated, row = crud.validate_hashed_password(os.environ['USER_TABLE'], body['emailAddress'], body['password'])
     if not validated:
         print('invalid email/password')
         # send the response
@@ -283,9 +283,10 @@ def login_handler(event, context):
         }
     
     try:
-        # delete the password and add the userType
+        # delete the password and add the userType and userId
         del body['password']
-        body['userType'] = user_type
+        body['userType'] = row['userType']
+        body['userId'] = row['userId']
         
         # add current and expiry time
         current_time = datetime.now()
