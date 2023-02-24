@@ -21,7 +21,7 @@ sam build --build-dir build --use-container --manifest public_requirements.txt
 4. build with private requirements not using the container
 ```
 grep "git+" requirements.txt > private_requirements.txt
-python -m pip install -r private_requirements.txt --no-deps -t build/CreateOrderFunction/
+python -m pip install -r private_requirements.txt --no-deps -t build/LoginFunction/
 ```
 
 5. manual copy of the fourth party library from build folder to src folder
