@@ -7,6 +7,9 @@ Parameters:
     AllowedValues:
       - dev
       - qa
+Conditions:
+  UseProdCondition:
+    !Equals [!Ref Stage, prod]
 Globals:
   Function:
     Runtime: python3.7
@@ -43,3 +46,14 @@ Resources:
             Path: /login
             Method: POST
             RestApiId: !Ref ApiDeployment
+  AuthServiceMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: auth-service
+      DomainName: !If [UseProdCondition, api.online.theeternalmonuments.com, !Join [ "", [ !Ref Stage, api, .online.theeternalmonuments.com ] ]]
+      RestApiId: !Ref ApiDeployment
+      Stage: !Ref ApiDeploymentStage
+Outputs:
+  EndpointUrl:
+    Description: 'Auth REST endpoint URL'
+    Value: !Sub 'https://${ApiDeployment}.execute-api.${AWS::Region}.amazonaws.com/${Stage}'
