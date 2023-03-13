@@ -6,3 +6,4 @@ build
 build.toml
 private_requirements.txt
 public_requirements.txt
+venv

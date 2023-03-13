@@ -11,6 +11,11 @@ Conditions:
   UseProdCondition:
     !Equals [!Ref Stage, prod]
 Globals:
+  Api:
+    Cors:
+      AllowOrigin: "'*'"
+      AllowHeaders: "*"
+      AllowMethods: "'*'"
   Function:
     Runtime: python3.7
     CodeUri: src/
@@ -24,6 +29,32 @@ Resources:
     Properties:
       OpenApiVersion: 3.0.1
       StageName: !Ref Stage
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'*'"
+        AllowMethods: "'*'"
+  ApiGateway4XXResponse:
+    Type: "AWS::ApiGateway::GatewayResponse"
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+      ResponseTemplates:
+        "application/json": "{\n     \"error\": $context.error.messageString,\n     \"type\":  \"$context.error.responseType\",\n     \"stage\":  \"$context.stage\",\n     \"resourcePath\":  \"$context.resourcePath\",\n     \"status\": \"'401'\"\n}"
+      ResponseType: DEFAULT_4XX
+      RestApiId: !Ref ApiDeployment
+      StatusCode: "401"
+  ApiGateway5XXResponse:
+    Type: "AWS::ApiGateway::GatewayResponse"
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+      ResponseTemplates:
+        "application/json": "{\n     \"error\": $context.error.messageString,\n     \"type\":  \"$context.error.responseType\",\n     \"stage\":  \"$context.stage\",\n     \"resourcePath\":  \"$context.resourcePath\",\n     \"status\": \"'500'\"\n}"
+      ResponseType: DEFAULT_5XX
+      RestApiId: !Ref ApiDeployment
+      StatusCode: "500"
   AuthFunction:
     Type: AWS::Serverless::Function
     Description: 'Lambda auth function'

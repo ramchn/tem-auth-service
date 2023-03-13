@@ -15,6 +15,7 @@ import json
 import os
 from datetime import datetime, timedelta
 from temcommonutils.dbutils import crud
+from temcommonutils.requtils import baseresponse
 
 def auth_handler(event, context):
     print('Method ARN: ' + event['methodArn'])
@@ -266,20 +267,15 @@ def login_handler(event, context):
 
     if 'emailAddress' not in body or 'password' not in body:
         print('invalid body')
-        # send the response
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'msg': 'invalid body'})
-        }
+        # send the error response
+        return baseresponse.message({'msg': 'invalid body'}, 500)
 
     validated, row = crud.validate_hashed_password(os.environ['USER_TABLE'], body['emailAddress'], body['password'])
     if not validated:
         print('invalid email/password')
-        # send the response
-        return {
-            'statusCode': 401,
-            'body': json.dumps({'msg': 'invalid username/password'})
-        }
+        # send the error response
+        return baseresponse.message({'msg': 'invalid username/password'}, 401)
+        
     
     try:
         # delete the password and add the userType and userId
@@ -295,14 +291,8 @@ def login_handler(event, context):
         print('token: ' + str(token))
     except:
         print('encoding error')
-        # send the response
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'msg': 'encoding error'})
-        }
+        # send the error response
+        return baseresponse.message({'msg': 'encoding error'}, 500)
 
-    # send the response
-    return {
-        'statusCode': 200,
-        'body': json.dumps({'token': token})
-    }
+    # send the success response
+    return baseresponse.message({'token': token}, 200)
