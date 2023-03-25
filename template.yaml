@@ -11,11 +11,6 @@ Conditions:
   UseProdCondition:
     !Equals [!Ref Stage, prod]
 Globals:
-  Api:
-    Cors:
-      AllowOrigin: "'*'"
-      AllowHeaders: "*"
-      AllowMethods: "'*'"
   Function:
     Runtime: python3.7
     CodeUri: src/
