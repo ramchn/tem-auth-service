@@ -278,23 +278,18 @@ def login_handler(event, context):
         
     
     try:
-        # delete the password and add the userType and userId
-        del body['password']
-        body['userType'] = row['userType']
-        body['userId'] = row['id']
-        body['firstName'] = row['firstName']
-        body['lastName'] = row['lastName']
-        
+        # delete the password 
+        del row['password']
         # add current and expiry time
         current_time = datetime.now()
-        body['iat'] = current_time
-        body['exp'] = current_time + timedelta(hours=12)
-        token = jwt.encode(body, "secret", algorithm="HS256")
+        row['iat'] = current_time
+        row['exp'] = current_time + timedelta(hours=12)
+        token = jwt.encode(row, "secret", algorithm="HS256")
         print('token: ' + str(token))
     except:
         print('encoding error')
         # send the error response
-        return baseresponse.message({'msg': 'encoding error'}, 500)
+        return baseresponse.message(json.dumps({'msg': 'encoding error'}), 500)
 
     # send the success response
-    return baseresponse.message({'token': token}, 200)
+    return baseresponse.message(json.dumps({'token': token}), 200)
