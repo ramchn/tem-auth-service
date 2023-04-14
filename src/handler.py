@@ -85,7 +85,7 @@ def auth_handler(event, context):
     context = {
         'emailAddress': decoded_token['emailAddress'], 
         'userType': decoded_token['userType'], 
-        'userId': decoded_token['userId']
+        'userId': decoded_token['id']
     }
     # context['arr'] = ['foo'] <- this is invalid, APIGW will not accept it
     # context['obj'] = {'foo':'bar'} <- also invalid
