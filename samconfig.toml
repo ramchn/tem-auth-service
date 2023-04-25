@@ -16,8 +16,8 @@ parameter_overrides = "Stage=\"dev\""
 [qa]
 [qa.deploy]
 [qa.deploy.parameters]
-stack_name = "tem-dev-auth-service"
-s3_bucket = "tem-dev-deployment-bucket"
+stack_name = "tem-qa-auth-service"
+s3_bucket = "tem-qa-deployment-bucket"
 s3_prefix = "tem-auth-service"
 region = "us-west-2"
 confirm_changeset = true
