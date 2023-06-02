@@ -266,15 +266,15 @@ def login_handler(event, context):
     print('body: ' + str(body))
 
     if 'emailAddress' not in body or 'password' not in body:
-        print('invalid body')
+        print('Invalid Body')
         # send the error response
-        return baseresponse.message({'msg': 'invalid body'}, 500)
+        return baseresponse.message(json.dumps({'msg': 'Invalid Body'}), 400)
 
     validated, row = crud.validate_hashed_password(os.environ['USER_TABLE'], body['emailAddress'], body['password'])
     if not validated:
-        print('invalid email/password')
+        print('Invalid Email/Password')
         # send the error response
-        return baseresponse.message({'msg': 'invalid username/password'}, 401)
+        return baseresponse.message(json.dumps({'msg': 'Invalid Login/Password'}), 400)
         
     
     try:
