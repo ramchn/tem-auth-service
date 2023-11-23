@@ -286,8 +286,9 @@ def login_handler(event, context):
         row['exp'] = current_time + timedelta(hours=12)
         token = jwt.encode(row, "secret", algorithm="HS256")
         print('token: ' + str(token))
-    except:
-        print('encoding error')
+    except Exception as e:
+        print('encoding error: ')
+        print(e)
         # send the error response
         return baseresponse.message(json.dumps({'msg': 'encoding error'}), 500)
 
